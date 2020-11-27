@@ -37,6 +37,7 @@ namespace CoffeeBreak
             playerPos = base.LocalPlayer.Character.Position;
             
             CoffeeMenu();
+            Tick += DisplayHint;
 
 
             foreach (Vector3 loc in coffeeMachines)
@@ -108,7 +109,7 @@ namespace CoffeeBreak
                         playerPos = LocalPlayer.Character.Position;
                         float dist = World.GetDistance(pos, playerPos);
 
-                        if (dist < 10f)
+                        if (dist < 8f)
                         {
                             menu.Visible = !menu.Visible;
                         }
@@ -116,6 +117,22 @@ namespace CoffeeBreak
                     
                 }
             };
+        }
+
+        public async Task DisplayHint()
+        {
+            foreach (Vector3 pos in coffeeMachines)
+            {
+                playerPos = LocalPlayer.Character.Position;
+                float dist = World.GetDistance(pos, playerPos);
+
+                if (dist < 8f)
+                {
+                    CitizenFX.Core.Native.API.SetTextComponentFormat("String");
+                    CitizenFX.Core.Native.API.AddTextComponentString("Press F6 to open coffee menu...");
+                    CitizenFX.Core.Native.API.DisplayHelpTextFromStringLabel(0, false, true, -1);
+                }
+            }
         }
 
     }
