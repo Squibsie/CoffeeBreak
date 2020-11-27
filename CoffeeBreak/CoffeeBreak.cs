@@ -22,17 +22,15 @@ namespace CoffeeBreak
 
         int coffeecup;
 
-        public Vector3[] coffeeMachines = new Vector3[2]
+        public Vector3[] coffeeMachines = new Vector3[6]
         {
             new Vector3(24.82f, -1342.447f, 29.497f),
-            new Vector3(-45.865f, -1754.764f, 29.421f)
+            new Vector3(-45.865f, -1754.764f, 29.421f),
+            new Vector3(126.259f, -1285.655f, 29.284f),
+            new Vector3(1162.985f, -319.451f, 69.205f),
+            new Vector3(-707.489f, -910.019f, 19.216f),
+            new Vector3(373.901f, 330.734f, 103.566f),
         };
-
-        public Vector3[] coffeeLocations = new Vector3[1]
-        {
-            new Vector3(29.085f, -1350.303f, 29.332f)
-        };
-
 
         internal CoffeeBreak()
         {
@@ -41,12 +39,11 @@ namespace CoffeeBreak
             CoffeeMenu();
 
 
-            foreach (Vector3 loc in coffeeLocations)
+            foreach (Vector3 loc in coffeeMachines)
             {
                 Blip CoffeeLoc = World.CreateBlip(loc);                
-                CoffeeLoc.Sprite = BlipSprite.Business;
-                CoffeeLoc.Name = "Coffee Machine";
-                
+                CoffeeLoc.Sprite = BlipSprite.Store;
+                CoffeeLoc.Name = "Coffee Machine";                
             }
             
         }
@@ -63,7 +60,7 @@ namespace CoffeeBreak
                 RightIcon = MenuItem.Icon.INV_DOLLAR
             };
             menu.AddMenuItem(buyCoffee);
-            MenuItem clear = new MenuItem("Clear Anim", "Finish your coffee, you've got work to do!")
+            MenuItem clear = new MenuItem("Finish Up", "Finish your drink, you've got work to do!")
             {
                 RightIcon = MenuItem.Icon.NONE
             };
@@ -81,12 +78,23 @@ namespace CoffeeBreak
                     CitizenFX.Core.Native.API.RequestAnimDict("amb@world_human_drinking@coffee@male@idle_a");
                     player.Task.PlayAnimation("amb@world_human_drinking@coffee@male@idle_a", "idle_a", -1 ,-1, flags);
 
+                    uint streetName = 0u;
+                    uint crossing = 0u;
+                    CitizenFX.Core.Native.API.GetStreetNameAtCoord(LocalPlayer.Character.Position.X, LocalPlayer.Character.Position.Y, LocalPlayer.Character.Position.Z, ref streetName, ref crossing);
+
+                    BaseScript.TriggerServerEvent("PostToDiscord", CitizenFX.Core.Native.API.GetPlayerName(CitizenFX.Core.Native.API.PlayerId()), CitizenFX.Core.Native.API.GetStreetNameFromHashKey(streetName), "REFRESHMENT BREAK");
                     
                 }
                 if (_index == 1) //clear
                 {
                     player.Task.ClearAnimation("amb@world_human_drinking@coffee@male@idle_a", "idle_a");
                     CitizenFX.Core.Native.API.DeleteEntity(ref coffeecup);
+
+                    uint streetName = 0u;
+                    uint crossing = 0u;
+                    CitizenFX.Core.Native.API.GetStreetNameAtCoord(LocalPlayer.Character.Position.X, LocalPlayer.Character.Position.Y, LocalPlayer.Character.Position.Z, ref streetName, ref crossing);
+
+                    BaseScript.TriggerServerEvent("PostToDiscord", CitizenFX.Core.Native.API.GetPlayerName(CitizenFX.Core.Native.API.PlayerId()), CitizenFX.Core.Native.API.GetStreetNameFromHashKey(streetName), "ON PATROL");
 
                 }
             };
